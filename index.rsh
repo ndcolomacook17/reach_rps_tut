@@ -9,10 +9,10 @@ const Player = {
 // compiler first looks at/enters in main export block
 export const main = Reach.App(() => {
     const Alice = Participant('Alice', {
-        ...Player
+        ...Player,
     });
     const Bob = Participant('Bob', {
-        ...Player
+        ...Player,
     });
     init(); // deployment of the Reach program, lets program to start doing things
 

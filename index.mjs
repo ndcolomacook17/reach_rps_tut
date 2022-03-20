@@ -1,13 +1,13 @@
 import { loadStdlib } from '@reach-sh/stdlib';
 import * as backend from './build/index.main.mjs';
-const stdlib = loadStdlib();
+const stdlib = loadStdlib(process.env);
 
 const startingBalance = stdlib.parseCurrency(100);
 const accAlice = await stdlib.newTestAccount(startingBalance);
 const accBob = await stdlib.newTestAccount(startingBalance);
 
 const ctcAlice = accAlice.contract(backend);
-const ctcBob = accBob.contract(backend);
+const ctcBob = accBob.contract(backend, ctcAlice.getInfo());
 
 // these must be order dependent due to future modulo arithmetic for outcome var
 const HAND = ['Rock', 'Paper', 'Scissors'];
@@ -21,7 +21,7 @@ const Player = (Who) => ({
         return hand;
     },
     seeOutcome: (outcome) => {
-        console.log(`${Who} saw outcome ${OUTCOME[outcome]}`)
+        console.log(`${Who} saw outcome ${OUTCOME[outcome]}`);
     },
 });
 
