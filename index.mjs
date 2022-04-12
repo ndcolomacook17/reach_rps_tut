@@ -6,11 +6,9 @@ const startingBalance = stdlib.parseCurrency(100);
 const accAlice = await stdlib.newTestAccount(startingBalance);
 const accBob = await stdlib.newTestAccount(startingBalance);
 
-// helper fxn for displaying currency amounts (up to 4 decimal places)
+// Nested fxn defs here create ability to bet on rps, tokenizing our app
 const fmt = (x) => stdlib.formatCurrency(x, 4);
-// get balance of participant, display it with fmt
 const getBalance = async (who) => fmt(await stdlib.balanceOf(who));
-// get balance before game starts for both Alice and Bob
 const beforeAlice = await getBalance(accAlice);
 const beforeBob = await getBalance(accBob);
 
@@ -23,6 +21,7 @@ const OUTCOME = ['Bob wins!', 'Draw!', 'Alice wins!'];
 
 // constructor for Player implementation
 const Player = (Who) => ({
+    ...stdlib.hasRandom,
     getHand: () => {
         const hand = Math.floor(Math.random() * 3);
         console.log(`${Who} played ${HAND[hand]}`);
@@ -33,9 +32,11 @@ const Player = (Who) => ({
     },
 });
 
+// FE part
 await Promise.all([
     ctcAlice.p.Alice({
-        ...Player('Alice'), // splices Player interface into Alice's interface
+        // Alice, bob inheriting Player interface
+        ...Player('Alice'), 
         wager: stdlib.parseCurrency(5), // wager def, 5 units of the network token
     }),
     ctcBob.p.Bob({
@@ -47,10 +48,10 @@ await Promise.all([
     }),
 ]);
 
-// gets balances post A + B interactions
+// gets balances post A + B wager interaction
 const afterAlice = await getBalance(accAlice);
 const afterBob = await getBalance(accBob);
 
-// Summary of waver dynamics
+// Summary of wager dynamics
 console.log(`Alice went from ${beforeAlice} to ${afterAlice}.`);
 console.log(`Bob went fro ${beforeBob} to ${afterBob}.`);
